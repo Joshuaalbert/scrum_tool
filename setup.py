@@ -8,7 +8,7 @@ setup(name='scrum_tool',
       description='A simple ncurses based scrum tool',
       author=['Josh Albert'],
       author_email=['albert@strw.leidenuniv.nl'],
-    setup_requires=['npyscreen'],  
+    setup_requires=['npyscreen','numpy','matplotlib','dask'],  
     tests_require=[
         'pytest>=2.8',
     ],

@@ -6,12 +6,19 @@ The principle of of agile management is applied, along with a type of task sched
 Individual workers are parametrized based on their performance on tasks, and this allows for optimal worker assignment and task allotment.
 
 Typical install:
->>> git clone https://github.com/Joshuaalbert/scrum_tool.git
->>> cd scrum_tool && python setup.py install
->>> export PATH=${PWD}/bin/scrum_tool:${PATH}
+``` bash
+git clone https://github.com/Joshuaalbert/scrum_tool.git
+cd scrum_tool && python setup.py install
+export PATH=${PWD}/bin/scrum_tool:${PATH}
+```
 
 Typical usage:
->>> mkdir some_path && cd !$
->>> scrum_tool
+``` bash
+mkdir some_path && cd !$
+scrum_tool
+```
 
-This will create a database file in some_path
+This will create a database file in some_path. Pressing '?' in any screen will tell you the available commands.
+
+# Suggestions very welcome
+Start an issue for bugs or requests!

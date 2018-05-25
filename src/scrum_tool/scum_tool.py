@@ -634,7 +634,7 @@ class AddTask(npyscreen.ActionForm):
         self.wgDeps.update()
         self.wgWorkers.values = self.parentApp.taskGraph.workers
         self.wgWorkers.update()
-        self.wgDesc = """"""
+        self.wgDesc.value = """"""
 
     def beforeEditing(self):
         self.update()

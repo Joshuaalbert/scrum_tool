@@ -164,9 +164,10 @@ class TaskGraph(object):
         c.execute('insert into sprints(name, tasks, start_date, end_date) values(?,?,?,?)',(name,pickle.dumps(task_ids), start_date, end_date))
         db.commit()
         c.close()
-
-        stats = [self.get_task_stat(t) for t in tasks]
-        for t,s in zip(tasks,stats):
+        
+        task_order = self.get_order_of_execution(tasks)
+        stats = [self.get_task_stat(t) for t in task_order]
+        for t,s in zip(task_order,stats):
             if s == 'backlog':
                 self.update_task_stat(t,'new')
 

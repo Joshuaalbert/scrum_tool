@@ -179,7 +179,7 @@ class AddSprint(npyscreen.ActionForm):
         length = np.sum([self.parentApp.taskGraph.get_task_length(t) for t in task_order])
         if npyscreen.notify_yes_no("Estimated completion time: {:.1f} hours\n".format(length) + \
                 "Available work-hours (assuming 8hr days): {:.1f} hours\n".format(sprint_days*8.) + \
-                'Suggested task completion order:\n{}'.format(length, task_order), 
+                'Suggested task completion order:\n{}'.format(task_order), 
                 title="Task proposal", form_color='STANDOUT', wrap=True, editw = 1):
             self.parentApp.taskGraph.add_sprint(self.wgName.value, goal_tasks, self.wgStart.value,self.wgEnd.value)
         self.parentApp.switchFormPrevious()

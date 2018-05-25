@@ -858,6 +858,7 @@ class LogHours(npyscreen.ActionForm):
         self.name = "Log Hours"
         self.wgTask.value   = self.value
         self.wgDate.value = datetime.today()
+        self.wgHours.value = ''
         self.update()
         
     def on_ok(self):

@@ -1,7 +1,7 @@
 import numpy as np
 import npyscreen
 from datetime import datetime
-from task_graph import TaskGraph
+from scrum_tool.task_graph import TaskGraph
 import os
 
 class SwitchFormMultiLineAction(npyscreen.MultiLineAction):
@@ -200,8 +200,8 @@ class EditSprint(npyscreen.ActionForm):
         self.wgSuggestedTask= self.add(npyscreen.TitleText,name='Suggested next task:',editable=False)
 
         self.wgTitle1 = self.add(npyscreen.TitleText,name='Involved tasks:',editable=False)
-        self.wgColTitles = self.add(npyscreen.GridColTitles,col_titles=['new','inprogress','finished'],editable=False,max_height=1)
-        self.wgTaskGrid = self.add(npyscreen.SimpleGrid, columns=3,scroll_exit=True, max_height=5)
+        self.wgColTitles = self.add(npyscreen.GridColTitles,column_width=48 ,col_titles=['new','inprogress','finished'],editable=False,max_height=1)
+        self.wgTaskGrid = self.add(npyscreen.SimpleGrid, column_width=48 ,columns=3,scroll_exit=True, max_height=5)
 
         self.wgCompletion = self.add(npyscreen.TitleText, name = "Completion:", editable=False)
 
@@ -270,8 +270,11 @@ class EditSprint(npyscreen.ActionForm):
         new = []
         ip = []
         f = []
-        for t in self.parentApp.taskGraph.tasks:
+        for t in tasks:
             stat = self.parentApp.taskGraph.get_task_stat(t)
+            if stat == 'backlog':
+                self.parentApp.taskGraph.update_task_stat(t,'new')
+                stat = 'new'
             if stat == 'new':
                 new.append(t)
             elif stat == 'inprogress':
@@ -424,8 +427,8 @@ class EditWorker(npyscreen.ActionForm):
         self.wgNumHours = self.add(npyscreen.TitleText, name = "Hours worked:", editable=False)
         self.wgEfficiency = self.add(npyscreen.TitleText, name = "avg. Efficiency [hours worked/expected]:", editable=False)
         self.wgEntries = self.add(npyscreen.TitleText, name = "Logged entries:", editable=False)
-        self.wgColTitles = self.add(npyscreen.GridColTitles,col_titles=['Date','Hours','Task'],editable=False,max_height=1)
-        self.wgGrid = self.add(npyscreen.SimpleGrid, columns=3,scroll_exit=True, max_height=5,select_whole_line=True)
+        self.wgColTitles = self.add(npyscreen.GridColTitles,column_width=48 ,col_titles=['Date','Hours','Task'],editable=False,max_height=1)
+        self.wgGrid = self.add(npyscreen.SimpleGrid, column_width=48 ,columns=3,scroll_exit=True, max_height=5,select_whole_line=True)
         self.add_handlers({
             "r": self.when_remove_worker,
             "?": self.when_help
@@ -507,8 +510,8 @@ class ManageTasks(npyscreen.ActionForm):
                 switch_dict={'Add new task':'ADDTASK'},scroll_exit=True)
         self.wgTitle1 = self.add(npyscreen.TitleText,name='Manage tasks',editable=False)
 
-        self.wgColTitles = self.add(npyscreen.GridColTitles,col_titles=['backlog','new','inprogress','finished'],editable=False,max_height=1)
-        self.wgGrid = self.add(npyscreen.SimpleGrid, columns=4,scroll_exit=True, max_height=5)
+        self.wgColTitles = self.add(npyscreen.GridColTitles,column_width=48 ,col_titles=['backlog','new','inprogress','finished'],editable=False,max_height=1)
+        self.wgGrid = self.add(npyscreen.SimpleGrid, column_width=48 ,columns=4,scroll_exit=True, max_height=5)
 
         self.add_handlers({
             "e": self.when_edit_task,
@@ -920,6 +923,11 @@ class ScrumApplication(npyscreen.NPSAppManaged):
         self.addForm("MANAGETASKS",ManageTasks)
         self.addForm("MANAGEWORKERS",ManageWorkers)
         self.addForm("MANAGESPRINTS",ManageSprints)
+    def run(self):
+        try:
+            super(ScrumApplication,self).run()
+        except KeyboardInterrupt:
+            print("Goodbye!")
 
  
 if __name__ == '__main__':

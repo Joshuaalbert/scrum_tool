@@ -197,23 +197,6 @@ class TaskGraph(object):
                 has_task.append(r[0])
         c.close()
         return [self.get_sprint_from_sprint_id(s) for s in has_task]
-
-    def get_all_sprints_with_task(self,task):
-        task = self.resolve_task(task)
-        task_id = self.get_task_id_from_task(task)
-        db = sql.connect(self.filename)
-        c = db.cursor()
-        c.execute('SELECT sprint_id,tasks from sprints',(task_id,))
-        res = c.fetchall()
-        c.close()
-        if len(res) == 0:
-            return []
-        has_task = []
-        for r in res:
-            if task_id in pickle.loads(r[1]):
-                has_task.append(r[0])
-        
-        return [self.get_sprint_from_sprint_id(s) for s in has_task]
     
     def get_goal_tasks_from_sprint(self,sprint):
         sprint = self.resolve_sprint(sprint)
@@ -314,7 +297,7 @@ class TaskGraph(object):
         for t in tasks:
             entries_ = self.get_hour_entries_for_task(t)
             for e in entries_:
-                if self.is_date_in_sprint(sprint,self.to_datetime(e[3])):
+                if self.is_date_in_sprint(sprint,self.to_datetime(e[2])):
                     entries.append(e)
         return entries
 
@@ -323,9 +306,9 @@ class TaskGraph(object):
         entries = self.get_entries_in_sprint(sprint)
         hours = 0.
         for e in entries:
-            d = self.to_datetime(e[3]).timestamp()
+            d = self.to_datetime(e[2]).timestamp()
             if d <= datetime.today().timestamp():
-                hours += e[5]
+                hours += e[4]
         return hours
 
     def get_ideal_burn(self,sprint):
@@ -383,10 +366,10 @@ class TaskGraph(object):
         hours_left = np.ones(len(time_array))*length
         hours = np.zeros(len(time_array))
         for e in entries:
-            d = self.to_datetime(e[3])
+            d = self.to_datetime(e[2])
             idx = np.searchsorted(time_array,d.timestamp())
-            hours_left[idx:] -= e[5]
-            hours[idx] += e[5]
+            hours_left[idx:] -= e[4]
+            hours[idx] += e[4]
                 
         ideal_burn = self.get_ideal_burn(sprint)
         actual_burn = self.get_actual_burn(sprint)
@@ -967,7 +950,7 @@ class TaskGraph(object):
         return [[r[0], r[1], self.get_task_from_task_id(r[2])] for r in res]
     
 def test():
-    tg = TaskGraph(new=True)
+    tg = TaskGraph(filename='test.db',new=True)
     tg.add_worker('abc')
     tg.add_worker('abcd')
     tg.add_task('a',1.,1,[])

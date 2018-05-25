@@ -37,16 +37,17 @@ class TaskGraph(object):
                         new_date TEXT, \
                         inprogress_date TEXT, \
                         finished_date TEXT, \
-                        description TEXT)")
+                        description TEXT, \
+                        category TEXT)")
 
         c.execute(
                 "CREATE TABLE IF NOT EXISTS hours\
                         (entry_id INTEGER PRIMARY KEY,\
                         task_id INTEGER, \
-                        sprint_id INTEGER, \
                         date TEXT, \
                         worker_id INTEGER, \
-                        hours REAL)")
+                        hours REAL, \
+                        params TEXT)")
 
         c.execute(
                 "CREATE TABLE IF NOT EXISTS sprints\

@@ -601,12 +601,7 @@ class TaskGraph(object):
 
     def rm_task(self,task):
         task = self.resolve_task(task)
-        task_id = self.get_task_id_from_task(task)
-        db = sql.connect(self.filename)
-        c = db.cursor()
-        c.execute('DELETE from tasks where task_id=?',(task_id,))
-        db.commit()
-        c.close()
+        
         tasks = self.tasks
         for t in tasks:
             deps = self.get_deps_from_task(t)
@@ -615,6 +610,13 @@ class TaskGraph(object):
                 if d != task:
                     deps_.append(d)
             self.update_task_deps(t,deps_)
+
+        task_id = self.get_task_id_from_task(task)
+        db = sql.connect(self.filename)
+        c = db.cursor()
+        c.execute('DELETE from tasks where task_id=?',(task_id,))
+        db.commit()
+        c.close()
 
 
 

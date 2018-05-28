@@ -607,6 +607,16 @@ class TaskGraph(object):
         c.execute('DELETE from tasks where task_id=?',(task_id,))
         db.commit()
         c.close()
+        tasks = self.tasks
+        for t in tasks:
+            deps = self.get_deps_from_task(t)
+            deps_ = []
+            for d in deps:
+                if d != task:
+                    deps_.append(d)
+            self.update_task_deps(t,deps_)
+
+
 
     def get_task_length(self,task):
         task = self.resolve_task(task)

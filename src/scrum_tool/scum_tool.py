@@ -205,8 +205,8 @@ class EditSprint(npyscreen.ActionForm):
 
         self.wgCompletion = self.add(npyscreen.TitleText, name = "Completion:", editable=False)
 
-        self.wgStart = self.add(npyscreen.TitleDateCombo, name = "Start Date:", editable=False)
-        self.wgEnd = self.add(npyscreen.TitleDateCombo, name = "End Date:",editable=False)
+        self.wgStart = self.add(npyscreen.TitleDateCombo, name = "Start Date:")
+        self.wgEnd = self.add(npyscreen.TitleDateCombo, name = "End Date:")
         
         self.wgDaysLeft = self.add(npyscreen.TitleText, name = "Days left:", editable=False)
 
@@ -319,6 +319,9 @@ class EditSprint(npyscreen.ActionForm):
         self.update()
 
     def on_ok(self):
+        self.parentApp.taskGraph.update_sprint_start_date(self.wgStart.value)
+        self.parentApp.taskGraph.update_sprint_end_date(self.wgEnd.value)
+        
         self.update()
         self.parentApp.switchFormPrevious()
 
@@ -757,7 +760,10 @@ class EditTask(npyscreen.ActionForm):
         length = self.parentApp.taskGraph.get_task_length(self.value)
         hours = self.parentApp.taskGraph.get_hours_for_task(self.value)
         self.wgCompletion.out_of = length
-        self.wgCompletion.value = min(hours/length*100,100)
+        if length == 0.:
+            self.wgCompletion.value = 0.
+        else:
+            self.wgCompletion.value = min(hours/length*100,100)
         self.wgRem.value = "{:.1f} hours".format(length - hours)
 
         times = [0., 1.,2.,4.,8.,8*2.,8*4.,8*5.,10*8.,20*8.,40*8., 80*8., 160*8.]
@@ -849,7 +855,10 @@ class LogHours(npyscreen.ActionForm):
         hours = self.parentApp.taskGraph.get_hours_for_task(self.value)
         self.wgLen.value = "{:.1f} hours".format(length - hours)
         self.wgCompletion.out_of = length
-        self.wgCompletion.value = min(hours/length*100,100)
+        if length == 0.:
+            self.wgCompletion.value = 0.
+        else:
+            self.wgCompletion.value = min(hours/length*100,100)
                 
         self.wgWorker.values = self.parentApp.taskGraph.get_workers_from_task(self.value)
 

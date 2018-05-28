@@ -182,6 +182,26 @@ class TaskGraph(object):
         db.commit()
         c.close()
 
+    def update_sprint_end_date(self,sprint,date):
+        sprint = self.resolve_sprint(sprint)
+        sprint_id = self.get_sprint_id_from_sprint(sprint)
+        db = sql.connect(self.filename)
+        c = db.cursor()
+        c.execute('UPDATE sprints set end_date=? \
+                    WHERE sprint_id=?', (date, sprint_id))
+        db.commit()
+        c.close()
+
+    def update_sprint_start_date(self,sprint,date):
+        sprint = self.resolve_sprint(sprint)
+        sprint_id = self.get_sprint_id_from_sprint(sprint)
+        db = sql.connect(self.filename)
+        c = db.cursor()
+        c.execute('UPDATE sprints set_start_date=? \
+                    WHERE sprint_id=?', (date, sprint_id))
+        db.commit()
+        c.close()
+
     def get_all_sprints_with_task(self,task):
         task = self.resolve_task(task)
         task_id = self.get_task_id_from_task(task)
@@ -225,9 +245,23 @@ class TaskGraph(object):
         tasks = self.get_tasks_from_sprint(sprint)
         return np.sum([self.get_task_length(t) for t in tasks])
 
+    def get_expected_hours_of_remaining_tasks_for_sprint(self,sprint):
+        tasks = self.get_remaining_tasks_from_sprint(sprint)
+        return np.sum([self.get_task_length(t) for t in tasks])
+
+
     def get_completed_hours_for_sprint(self,sprint):
         tasks = self.get_tasks_from_sprint(sprint)
         return np.sum([self.get_hours_for_task(t) for t in tasks])
+
+    def get_remaining_tasks_from_sprint(self,sprint):
+        sprint = self.resolve_sprint(sprint)
+        tasks = self.get_tasks_from_sprint(sprint)
+        tasks_ = []
+        for t in tasks:
+            if self.get_task_stat(t) != 'finished':
+                tasks_.append(t)
+        return tasks_
 
     def is_sprint_finished(self,sprint,date=None):
         if date is None:
@@ -324,6 +358,7 @@ class TaskGraph(object):
 
     def get_required_burn(self,sprint):
         sprint = self.resolve_sprint(sprint)
+#        length = self.get_expected_hours_of_remaining_tasks_for_sprint(sprint)
         length = self.get_expected_hours_for_sprint(sprint)
         hours = self.get_hours_burned_in_sprint(sprint)
         days = self.get_days_left_from_sprint(sprint)

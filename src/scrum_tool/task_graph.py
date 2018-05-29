@@ -197,7 +197,7 @@ class TaskGraph(object):
         sprint_id = self.get_sprint_id_from_sprint(sprint)
         db = sql.connect(self.filename)
         c = db.cursor()
-        c.execute('UPDATE sprints set_start_date=? \
+        c.execute('UPDATE sprints set start_date=? \
                     WHERE sprint_id=?', (date, sprint_id))
         db.commit()
         c.close()

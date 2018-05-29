@@ -319,8 +319,8 @@ class EditSprint(npyscreen.ActionForm):
         self.update()
 
     def on_ok(self):
-        self.parentApp.taskGraph.update_sprint_start_date(self.wgStart.value)
-        self.parentApp.taskGraph.update_sprint_end_date(self.wgEnd.value)
+        self.parentApp.taskGraph.update_sprint_start_date(self.value, self.wgStart.value)
+        self.parentApp.taskGraph.update_sprint_end_date(self.value, self.wgEnd.value)
         
         self.update()
         self.parentApp.switchFormPrevious()

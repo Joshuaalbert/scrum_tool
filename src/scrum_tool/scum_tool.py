@@ -262,6 +262,7 @@ class EditSprint(npyscreen.ActionForm):
         self.wgId.value = "{:03d}".format(self.parentApp.taskGraph.get_sprint_id_from_sprint(self.value))
         self.wgName.value = '{}'.format(self.parentApp.taskGraph.get_sprint_name_from_sprint(self.value))
         self.wgWorkers.values = self.parentApp.taskGraph.get_workers_from_sprint(self.value)
+        
 
         self.wgGoalTasks.value = " ,".join(self.parentApp.taskGraph.get_goal_tasks_from_sprint(self.value))
         tasks = self.parentApp.taskGraph.get_tasks_from_sprint(self.value)
@@ -296,6 +297,8 @@ class EditSprint(npyscreen.ActionForm):
             values.append([b,c,d])
         self.wgTaskGrid.values = values
         self.wgTaskGrid.update()
+        
+
 
         expected_hours = self.parentApp.taskGraph.get_expected_hours_for_sprint(self.value)
         hours = self.parentApp.taskGraph.get_completed_hours_for_sprint(self.value)
@@ -303,6 +306,7 @@ class EditSprint(npyscreen.ActionForm):
         self.wgCompletion.value = "{:.1f} of {:.1f} hours".format(hours,expected_hours)
         days_left = self.parentApp.taskGraph.get_days_left_from_sprint(self.value)
         start,end = self.parentApp.taskGraph.get_dates_from_sprint(self.value)
+
 
         self.wgStart.value = start
         self.wgEnd.value = end

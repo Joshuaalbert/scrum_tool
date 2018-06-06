@@ -239,7 +239,7 @@ class TaskGraph(object):
         workers = []
         for t in tasks:
             workers.append(self.get_workers_from_task(t))
-        return np.unique(workers)
+        return list(np.unique(workers))
         
     def get_expected_hours_for_sprint(self,sprint):
         tasks = self.get_tasks_from_sprint(sprint)
@@ -436,7 +436,8 @@ class TaskGraph(object):
         ax.set_ylabel('hours')
 
         ax2.bar(dates, hours,align='edge',alpha=0.5)
-        ax2.bar(days_left, required_burn*np.ones(len(days_left)),alpha=0.5,align='edge',label='goal {:.1f} hr/day'.format(required_burn))
+        if len(days_left) > 0:
+            ax2.bar(days_left, required_burn*np.ones(len(days_left)),alpha=0.5,align='edge',label='goal {:.1f} hr/day'.format(required_burn))
         ax2.vlines(datetime.today(),0.,length,color='green',lw=3)
         ax2.set_title("Hours per day\nDaily hourly gain {:.1f}".format(self.get_daily_gain_in_sprint(sprint)))
         ax2.xaxis.set_major_formatter(fmt)
@@ -445,7 +446,8 @@ class TaskGraph(object):
         ax2.set_xlim(dates[0],x_max)
         ax2.set_ylabel('hours')
         ax2.set_xlabel('date')
-        ax2.legend()
+        if len(days_left) > 0:
+            ax2.legend()
 
         fig.autofmt_xdate()
         plt.tight_layout()

@@ -943,16 +943,16 @@ class TaskGraph(object):
         if stat != 'inprogress':
             self.update_task_stat(task,'inprogress',date)
 
-    def rm_hours(self, task, date, worker):
-        task = self.resolve_task(task)
-        worker = self.resolve_worker(worker)
-
-        task_id = self.get_task_id_from_task(task)
-        worker_id = self.get_worker_id_from_worker(worker)
+    def rm_hours(self, entry_id):#task, date, worker):
+#        task = self.resolve_task(task)
+#        worker = self.resolve_worker(worker)
+#
+#        task_id = self.get_task_id_from_task(task)
+#        worker_id = self.get_worker_id_from_worker(worker)
 
         db = sql.connect(self.filename)
         c = db.cursor()
-        c.execute('DELETE FROM hours WHERE task_id=? AND date=? AND worker_id=?',(task_id, date.date(), worker_id))
+        c.execute('DELETE FROM hours WHERE entry_id=?',(entry_id,))#task_id=? AND date=? AND worker_id=?',(task_id, date.date(), worker_id))
         db.commit()
         c.close()
 

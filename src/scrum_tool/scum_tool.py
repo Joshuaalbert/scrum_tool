@@ -713,6 +713,7 @@ class EditTask(npyscreen.ActionForm):
         self.add_handlers({
             "r": self.when_remove_task,
             "h": self.when_log_hours,
+            "H": self.when_rm_hours,
             "f": self.when_finish,
             "?": self.when_help
         })
@@ -726,7 +727,22 @@ class EditTask(npyscreen.ActionForm):
             self.parentApp.switchFormPrevious()
 
         
-        
+    def when_rm_hours(self,*args,**kwargs):
+        if len(self.wgHours.values) > 0:
+            value = self.wgHours.values[self.wgHours.cursor_line]
+            entries = self.parentApp.taskGraph.get_hour_entries_for_task(self.value)
+            idx = None
+            for i,e in enumerate(entries):
+                if str(e) == value:
+                    idx = i
+                    break
+            e = str(entries[i])
+            entry_id, task_id, date, worker_id, hours, _ = entries[i]
+            if npyscreen.notify_yes_no("Are you sure you want to delete hour entry '{}'".format(e)):
+                self.parentApp.taskGraph.rm_hours(entry_id)
+                self.update()
+                
+
     def when_log_hours(self,*args,**kwargs):
         self.parentApp.getForm("LOGHOURS").value = self.wgTask.value
         self.parentApp.getForm("LOGHOURS").wgDate.value = self.dt.value
